@@ -1,20 +1,20 @@
-import mongoose from "mongoose"
-const mongoDbURI=process.env.MONGODB_URI
+import mongoose from 'mongoose';
 
-let cashed= (global as any).mongoose || {conn:null, promise:null}
+const MONGODB_URI = process.env.MONGODB_URI;
 
-export const connectToDatabase=async ()=>{
-    if(cashed.conn)return cashed.conn
-    
-if (!mongoDbURI) {
-    throw new Error("MONGODB_URI environment variable is not defined");
-}
+let cached = (global as any).mongoose || { conn: null, promise: null };
 
-    cashed.promise=cashed.promise || mongoose.connect(mongoDbURI,{
-        dbName:'evently',
-        bufferCommands:false
-    })
-cashed.conn=await cashed.promise
-return cashed.conn
+export const connectToDatabase = async () => {
+  if (cached.conn) return cached.conn;
 
+  if(!MONGODB_URI) throw new Error('MONGODB_URI is missing');
+
+  cached.promise = cached.promise || mongoose.connect(MONGODB_URI, {
+    dbName: 'evently',
+    bufferCommands: false,
+  })
+
+  cached.conn = await cached.promise;
+
+  return cached.conn;
 }
